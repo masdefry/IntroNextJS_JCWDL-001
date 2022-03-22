@@ -1,8 +1,10 @@
 import Head from "next/head";
 import Image from "next/image";
 import Navbar from "../../components/navbar";
+import Axios from 'axios'
 
-export default function Users(){
+export default function Users(props){
+    console.log(props)
     return(
         <div>
             {/* SEO -> Search Enginee Optimazion */}
@@ -37,6 +39,33 @@ export default function Users(){
                 width="300px"
                 height="300px"
             />
+
+            {/* Mapping */}
+            <div>
+                {
+                    props.dataUsers.map(value => {
+                        return(
+                            <p key={value.id}> {value.username} </p>
+                        )
+                    })
+                }
+            </div>
         </div>
     )
+}
+// SSG
+export const getStaticProps = async() => {
+    try {
+        let res = await Axios.get('http://localhost:5001/users')
+        console.log(res.data)
+
+        return{
+            props: {
+                dataUsers: res.data
+            },
+            revalidate: 10
+        }
+    } catch (error) {
+        console.log(error)
+    }
 }
